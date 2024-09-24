@@ -1,0 +1,18 @@
+#CRC Codes for initially generated config files -- do not modify!
+FreeRTOSConfig.h=1602145430
+RTE_Device_917.h=2039050841
+emlib_core_debug_config.h=-212744839
+pin_config.h=-1176118501
+sl_board_configuration.h=-559764842
+sl_board_control.h=1349580067
+sl_core_config.h=-119586893
+sl_net_default_values.h=1447916269
+sl_si91x_button_btn0_config.h=345768304
+sl_si91x_button_pin_config.h=158153581
+sl_si91x_calendar_config.h=-530006670
+sl_si91x_power_manager_config_1.h=2069831829
+sl_si91x_power_manager_wakeup_source_config.h=164078515
+sl_si91x_stack_size_config.h=1151736032
+sl_si91x_ulp_timer_common_config.h=-932806990
+sl_si91x_ulp_timer_init_timer0_config.h=-416505136
+sl_sleeptimer_config.h=1360009810
