@@ -36,7 +36,7 @@
    | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS2 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS2 \
    | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_SLEEP) // Ored value of event for which callback is subscribed
 
-#define ULP_TIMER_MATCH_VALUE 40000000 // Timer match value for down-counter type with 20mhz clock for 2 seconds
+#define ULP_TIMER_MATCH_VALUE 200000000 // Timer match value for down-counter type with 20mhz clock for 2 seconds
 #define ULP_TIMER_INSTANCE \
   SL_ULP_TIMER_TIMER0 // ulp-timer instance to be used, user can pass selected timer-number in place of '0'
 
@@ -94,6 +94,7 @@ static void clear_ulp_timer_wakeup_source(void);
 static void power_control(sl_power_state_t from, sl_power_state_t to);
 static void remove_unused_peripherals(void);
 
+extern sl_status_t ulp_interrupt_setup(void);
 /*******************************************************************************
  **************************   GLOBAL FUNCTIONS   *******************************
  ******************************************************************************/
@@ -162,6 +163,9 @@ static void application_start(void *argument)
   }
   DEBUGOUT("Power Manager transition event is subscribed \n");
   change_state = false;
+
+  status = ulp_interrupt_setup();
+  DEBUGOUT("ULP interrupt init: 0x%lX\r\n", status);
 
   while (true) {
     power_manager_example_process_action();
