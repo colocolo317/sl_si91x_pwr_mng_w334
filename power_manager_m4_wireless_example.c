@@ -163,8 +163,43 @@ static void application_start(void *argument)
   DEBUGOUT("Power Manager transition event is subscribed \n");
   change_state = false;
 
+  remove_unused_peripherals();
+  // PS2 State requirement is added, it transits to PS2 state.
+  status = sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS2);
+  if (status != SL_STATUS_OK) {
+    // If status is not OK, return with the error code.
+    DEBUGOUT("Error Code: 0x%lX, Power State Transition Failed \n", status);
+  }
+  DEBUGOUT("Enter PS2: 0x%lx\r\n", status);
+
+#if 0
+  // ULP based wakeup source is selected.
+  status = sl_si91x_power_manager_set_wakeup_sources(SL_SI91X_POWER_MANAGER_GPIO_WAKEUP, true);
+  if (status != SL_STATUS_OK) {
+    // If status is not OK, return with the error code.
+    DEBUGOUT("sl_si91x_power_manager_set_wakeup_sources failed, Error Code: 0x%lX \n", status);
+    return;
+  }
+#endif
+
+  DEBUGOUT("Current State: PS%d go into PS1\n", sl_si91x_power_manager_get_current_state());
+  // Add requirement for PS0 (sleep without retention), it transits to PS0 state.
+  status = sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
+  if (status != SL_STATUS_OK) {
+    // If status is not OK, return with the error code.
+    DEBUGOUT("sl_si91x_power_manager_add_ps_requirement failed, Error Code: 0x%lX \n", status);
+  }
+#if 0
+  status = sl_si91x_power_manager_set_wakeup_sources(SL_SI91X_POWER_MANAGER_GPIO_WAKEUP, false);
+  if (status != SL_STATUS_OK) {
+    // If status is not OK, return with the error code.
+    DEBUGOUT("sl_si91x_power_manager_set_wakeup_sources failed, Error Code: 0x%lX \n", status);
+    return;
+  }
+#endif
+
   while (true) {
-    power_manager_example_process_action();
+    //power_manager_example_process_action();
   }
 }
 
