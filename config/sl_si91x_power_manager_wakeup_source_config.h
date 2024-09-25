@@ -55,7 +55,7 @@ extern "C" {
 // </e>
 
 // <e>GPIO Wakeup
-#define SL_ENABLE_GPIO_WAKEUP_SOURCE 0
+#define SL_ENABLE_GPIO_WAKEUP_SOURCE 1
 
 // <q ENABLE_NPSS_GPIO_0> Enable NPSS GPIO 0
 // <i> Default: 0
@@ -63,7 +63,7 @@ extern "C" {
 
 // <q ENABLE_NPSS_GPIO_1> Enable NPSS GPIO 1
 // <i> Default: 0
-#define ENABLE_NPSS_GPIO_1 0
+#define ENABLE_NPSS_GPIO_1 1
 
 // <q ENABLE_NPSS_GPIO_2> Enable NPSS GPIO 2
 // <i> Default: 0

@@ -34,7 +34,8 @@
   (SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS4 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS4   \
    | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS3 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS3 \
    | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS2 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS2 \
-   | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_SLEEP) // Ored value of event for which callback is subscribed
+   | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_SLEEP | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_STANDBY)
+   // Ored value of event for which callback is subscribed
 
 #define ULP_TIMER_MATCH_VALUE 40000000 // Timer match value for down-counter type with 20mhz clock for 2 seconds
 #define ULP_TIMER_INSTANCE \
@@ -163,8 +164,24 @@ static void application_start(void *argument)
   DEBUGOUT("Power Manager transition event is subscribed \n");
   change_state = false;
 
-  while (true) {
+  while (true)
+  {
+    set_npss_wakeup_source(SL_SI91X_POWER_MANAGER_GPIO_WAKEUP);
+
+    DEBUGOUT("Entering PS%d Sleep \n", sl_si91x_power_manager_get_current_state());
+    // Call the sleep function, it goes to PS4 sleep as current state is PS4.
+    status = sl_si91x_power_manager_sleep();
+    if (status != SL_STATUS_OK) {
+      // If status is not OK, return with the error code.
+      DEBUGOUT("sl_si91x_power_manager_sleep failed, Error Code: 0x%lX \n", status);
+      return;
+    }
+
+    clear_npss_wakeup_source(SL_SI91X_POWER_MANAGER_GPIO_WAKEUP);
+
+#if 0
     power_manager_example_process_action();
+#endif
   }
 }
 
