@@ -95,6 +95,7 @@ static void power_control(sl_power_state_t from, sl_power_state_t to);
 static void remove_unused_peripherals(void);
 
 extern sl_status_t ulp_interrupt_setup(void);
+extern void configuring_ps2_power_state(void);
 /*******************************************************************************
  **************************   GLOBAL FUNCTIONS   *******************************
  ******************************************************************************/
@@ -167,8 +168,47 @@ static void application_start(void *argument)
   status = ulp_interrupt_setup();
   DEBUGOUT("ULP interrupt init: 0x%lX\r\n", status);
 
+  remove_unused_peripherals();
+
+  status = sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS2);
+  DEBUGOUT("add ps req: 0x%lX\r\n", status);
+
+  DEBUGOUT("Current State: PS%d \n", sl_si91x_power_manager_get_current_state());
+  // PS2 state requirement is removed as it was previously added.
+  status = sl_si91x_power_manager_set_wakeup_sources(SL_SI91X_POWER_MANAGER_ULPSS_WAKEUP, true);
+  if (status != SL_STATUS_OK) {
+    // If status is not OK, return with the error code.
+    DEBUGOUT("sl_si91x_power_manager_set_wakeup_sources failed, Error Code: 0x%lX \n", status);
+    return;
+  }
+
+  status = sl_si91x_power_manager_remove_ps_requirement(SL_SI91X_POWER_MANAGER_PS2);
+  if (status != SL_STATUS_OK) {
+    // If status is not OK, return with the error code.
+    DEBUGOUT("Error Code: 0x%lX, Power State Transition Failed \n", status);
+  }
+  DEBUGOUT("remove ps req: 0x%lX\r\n", status);
+  // Add requirement for PS0 (sleep without retention), it transits to PS0 state.
+  status = sl_si91x_power_manager_add_ps_requirement(SL_SI91X_POWER_MANAGER_PS1);
+  if (status != SL_STATUS_OK) {
+    // If status is not OK, return with the error code.
+    DEBUGOUT("sl_si91x_power_manager_add_ps_requirement failed, Error Code: 0x%lX \n", status);
+  }
+  //SL_SI91X_POWER_MANAGER_CORE_EXIT_CRITICAL;
+  DEBUGOUT("Leave ps1\r\n");
+#if 0
+  /* Due to calling trim_efuse API om power manager it will change the clock
+      frequency, if we are not initialize the debug again it will print the
+      garbage data or no data in console output. */
+  DEBUGINIT();
+  // Configuring the ps2 power state by adjusting the clocks, configuring
+  // the ram retention and removing the unused peripherals
+  configuring_ps2_power_state();
+#endif
+
+
   while (true) {
-    power_manager_example_process_action();
+    //power_manager_example_process_action();
   }
 }
 

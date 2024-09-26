@@ -8,6 +8,7 @@
 #include "sl_gpio_board.h"
 #include "sl_si91x_driver_gpio.h"
 #include "rsi_debug.h"
+#include "sl_si91x_power_manager.h"
 
 #define ULP_INT_CH        0      // ULP GPIO Pin interrupt 0
 #define MODE_0            0      // Initializing GPIO MODE_0 value
@@ -190,4 +191,54 @@ sl_status_t ulp_interrupt_setup(void)
     DEBUGOUT("GPIO driver configure ulp pin interrupt is successful \n");
   }while(false);
   return status;
+}
+
+/*******************************************************************************
+ * powering off the peripherals not in use,
+ * Configuring power manager ram-retention
+ ******************************************************************************/
+void configuring_ps2_power_state(void)
+{
+  sl_status_t status;
+  sl_power_peripheral_t peri;
+  sl_power_ram_retention_config_t config;
+  // Clear the peripheral configuration
+  peri.m4ss_peripheral = 0;
+  // Configure RAM banks for retention during power management
+  config.configure_ram_banks = true; // Enable RAM bank configuration
+  config.m4ss_ram_banks      = SL_SI91X_POWER_MANAGER_M4SS_RAM_BANK_8 | SL_SI91X_POWER_MANAGER_M4SS_RAM_BANK_9
+                          | SL_SI91X_POWER_MANAGER_M4SS_RAM_BANK_10; // Specify the RAM banks to be
+                                                                     // retained during power
+                                                                     // management
+  config.ulpss_ram_banks = SL_SI91X_POWER_MANAGER_ULPSS_RAM_BANK_2 | SL_SI91X_POWER_MANAGER_ULPSS_RAM_BANK_3;
+  // Ored value for ulpss peripheral.
+  peri.ulpss_peripheral =
+    SL_SI91X_POWER_MANAGER_ULPSS_PG_MISC | SL_SI91X_POWER_MANAGER_ULPSS_PG_CAP | SL_SI91X_POWER_MANAGER_ULPSS_PG_SSI
+    | SL_SI91X_POWER_MANAGER_ULPSS_PG_I2S | SL_SI91X_POWER_MANAGER_ULPSS_PG_I2C | SL_SI91X_POWER_MANAGER_ULPSS_PG_IR
+    | SL_SI91X_POWER_MANAGER_ULPSS_PG_UDMA | SL_SI91X_POWER_MANAGER_ULPSS_PG_FIM | SL_SI91X_POWER_MANAGER_ULPSS_PG_AUX;
+  // Ored value for npss peripheral.
+  peri.npss_peripheral = SL_SI91X_POWER_MANAGER_NPSS_PG_MCURTC | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUWDT
+                         | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUPS | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUTS
+                         | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUSTORE2 | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUSTORE3
+                         | SL_SI91X_POWER_MANAGER_NPSS_PG_TIMEPERIOD;
+  do {
+    // Peripherals passed in this API are powered off.
+    status = sl_si91x_power_manager_remove_peripheral_requirement(&peri);
+    if (status != SL_STATUS_OK) {
+      // If status is not OK, return with the error code.
+      DEBUGOUT("sl_si91x_power_manager_remove_peripheral_requirement failed, "
+               "Error Code: 0x%lX",
+               status);
+      break;
+    }
+    // RAM retention modes are configured and passed into this API.
+    status = sl_si91x_power_manager_configure_ram_retention(&config);
+    if (status != SL_STATUS_OK) {
+      // If status is not OK, return with the error code.
+      DEBUGOUT("sl_si91x_power_manager_configure_ram_retention failed, Error "
+               "Code: 0x%lX",
+               status);
+      break;
+    }
+  } while (false);
 }
