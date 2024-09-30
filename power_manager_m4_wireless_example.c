@@ -27,6 +27,14 @@
 #include "sl_si91x_ulp_timer_common_config.h"
 #include "sl_si91x_button_instances.h"
 
+#include "rsi_debug.h"
+#include "sl_driver_gpio.h"
+#include "sl_gpio_board.h"
+#include "sl_si91x_driver_gpio.h"
+#include "sl_si91x_power_manager.h"
+#include "sl_si91x_wireless_shutdown.h"
+
+static void gpio_ulp_pin_interrupt_callback(uint32_t pin_intr);
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
@@ -313,7 +321,7 @@ void power_manager_example_process_action(void)
         power_control(SL_SI91X_POWER_MANAGER_PS4, SL_SI91X_POWER_MANAGER_PS2);
         change_state = false;
         // Next transition is from PS2 to PS4 state.
-        transition = PS2_TO_PS4;
+        transition = PS2_SLEEP;
       }
       break;
     case PS2_TO_PS4:
@@ -368,6 +376,7 @@ void power_manager_example_process_action(void)
       if (change_state) {
         power_control(SL_SI91X_POWER_MANAGER_PS2, SL_SI91X_POWER_MANAGER_SLEEP);
         change_state = false;
+        DEBUGOUT("IN_PS2_SLEEP\r\n");
         // Next transition is from PS2 to PS3 state.
         transition = PS2_TO_PS3;
       }
@@ -603,7 +612,7 @@ static void power_control(sl_power_state_t from, sl_power_state_t to)
   }
 
   if (to == SL_SI91X_POWER_MANAGER_SLEEP) {
-    set_npss_wakeup_source(SL_SI91X_POWER_MANAGER_SEC_WAKEUP);
+    set_npss_wakeup_source(SL_SI91X_POWER_MANAGER_GPIO_WAKEUP);
 
     DEBUGOUT("Entering PS%d Sleep \n", sl_si91x_power_manager_get_current_state());
     // Call the sleep function, it goes to PS4 sleep as current state is PS4.
@@ -642,6 +651,7 @@ static void power_control(sl_power_state_t from, sl_power_state_t to)
 /*******************************************************************************
  * Turns off the unused peripherals
  ******************************************************************************/
+typedef sl_gpio_t sl_si91x_gpio_t;
 static void remove_unused_peripherals(void)
 {
   sl_power_peripheral_t peri;
@@ -669,6 +679,54 @@ void sl_si91x_button_isr(uint8_t pin, int8_t state)
  * Configure and initialize the calendar wakeup source.
  * Different wakeup source can be passed here.
  ******************************************************************************/
+static void gpio_ulp_pin_interrupt_callback(uint32_t pin_intr)
+{
+  if (pin_intr == 0) {
+    // This is with respect to ISR context. Debugout might cause issues
+    // sometimes.
+    DEBUGOUT("gpio ulp pin interrupt0\n");
+  }
+}
+static void gpio_driver_ulp_initialization(void)
+{
+  sl_status_t status;
+  sl_gpio_driver_init();
+  //sl_si91x_gpio_t gpio_port_pin1 = { SL_SI91X_ULP_GPIO_1_PORT, SL_SI91X_ULP_GPIO_1_PIN };
+  //sl_si91x_gpio_t gpio_port_pin2 = { SL_SI91X_ULP_GPIO_2_PORT, SL_SI91X_ULP_GPIO_2_PIN };
+  sl_si91x_gpio_t gpio_port_pin8 = { 4, 6 };
+  sl_gpio_mode_t mode            = 0;
+
+  do {
+    DEBUGOUT("\r\n ULP_GPIO_PIN test starts \r\n");
+    status = sl_si91x_gpio_driver_enable_clock((sl_si91x_gpio_select_clock_t)ULPCLK_GPIO); // Enable GPIO ULP_CLK
+    if (status != SL_STATUS_OK) {
+      DEBUGOUT("sl_si91x_gpio_driver_enable_clock, Error code: %lu", status);
+      break;
+    }
+    DEBUGOUT("GPIO driver clock enable is successful \n");
+    status = sl_si91x_gpio_driver_enable_ulp_pad_receiver(6);
+    if (status != SL_STATUS_OK) {
+      DEBUGOUT("sl_si91x_gpio_driver_enable_ulp_pad_receiver, Error code: %lu", status);
+      break;
+    }
+    DEBUGOUT("GPIO driver ulp pad receiver enable is successful \n");
+
+    status = sl_gpio_driver_set_pin_mode(&gpio_port_pin8, mode, 0);
+    if (status != SL_STATUS_OK) {
+      DEBUGOUT("sl_gpio_driver_set_pin_mode, Error code: %lu", status);
+      break;
+    }
+    DEBUGOUT("GPIO driver set pin mode is successful \n");
+    status = sl_si91x_gpio_driver_set_pin_direction(4,6,
+                                                    (sl_si91x_gpio_direction_t)GPIO_INPUT);
+    if (status != SL_STATUS_OK) {
+      DEBUGOUT("sl_si91x_gpio_driver_set_pin_direction, Error code: %lu", status);
+      break;
+    }
+    DEBUGOUT("GPIO driver set pin direction is successful \n");
+  } while (false);
+}
+
 static void set_npss_wakeup_source(uint32_t wakeup_source)
 {
   sl_status_t status;
@@ -706,6 +764,16 @@ static void set_npss_wakeup_source(uint32_t wakeup_source)
       break;
 
     case SL_SI91X_POWER_MANAGER_GPIO_WAKEUP:
+      // GPIO initialization function for ULP instance
+            gpio_driver_ulp_initialization();
+            status = sl_si91x_power_manager_set_wakeup_sources(SL_SI91X_POWER_MANAGER_ULPSS_WAKEUP, true);
+            // Configure ULP GPIO pin interrupts
+            status = sl_si91x_gpio_driver_configure_ulp_pin_interrupt(0,(sl_si91x_gpio_interrupt_config_flag_t)SL_GPIO_INTERRUPT_FALL_EDGE, 6,(sl_gpio_irq_callback_t)&gpio_ulp_pin_interrupt_callback);
+            if (status != SL_STATUS_OK) {
+              DEBUGOUT("sl_si91x_gpio_driver_configure_ulp_pin_interrupt, Error code: %lu", status);
+              break;
+            }
+            DEBUGOUT("GPIO driver configure ulp pin interrupt is successful \n");
       // Initialization of wakeup sources can be added here.
       break;
     default:
