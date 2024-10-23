@@ -26,6 +26,7 @@
 #include "sl_ulp_timer_instances.h"
 #include "sl_si91x_ulp_timer_common_config.h"
 #include "sl_si91x_button_instances.h"
+#include "config/sl_net_default_values.h"
 
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
@@ -42,7 +43,7 @@
   SL_ULP_TIMER_TIMER0 // ulp-timer instance to be used, user can pass selected timer-number in place of '0'
 
 #define BUTTON_INSTANCE_0 button_btn0
-
+#define TIMEOUT_MS        5000
 /*******************************************************************************
  *************************** LOCAL VARIABLES   *******************************
  ******************************************************************************/
@@ -166,6 +167,10 @@ static void application_start(void *argument)
 
   while (true)
   {
+    //* TODO action
+
+    //* TODO detect power save condition
+
     set_npss_wakeup_source(SL_SI91X_POWER_MANAGER_GPIO_WAKEUP);
 
     DEBUGOUT("Entering PS%d Sleep \n", sl_si91x_power_manager_get_current_state());
@@ -229,6 +234,25 @@ static sl_status_t initialize_wireless(void)
     DEBUGOUT("sl_wifi_init failed, Error Code: 0x%lX \n", status);
     return status;
   }
+
+  sl_wifi_client_configuration_t access_point = { 0 };
+  sl_wifi_credential_t cred  = { 0 };
+  sl_wifi_credential_id_t id = SL_NET_DEFAULT_WIFI_CLIENT_CREDENTIAL_ID;
+  memset(&access_point, 0, sizeof(sl_wifi_client_configuration_t));
+
+  cred.type = SL_WIFI_PSK_CREDENTIAL;
+  memcpy(cred.psk.value, DEFAULT_WIFI_CLIENT_CREDENTIAL, strlen((char *)DEFAULT_WIFI_CLIENT_CREDENTIAL));
+  status = sl_net_set_credential(id, SL_NET_WIFI_PSK, DEFAULT_WIFI_CLIENT_CREDENTIAL, strlen((char *)DEFAULT_WIFI_CLIENT_CREDENTIAL));
+  access_point.ssid.length = strlen((char *)DEFAULT_WIFI_CLIENT_PROFILE_SSID);
+  memcpy(access_point.ssid.value, DEFAULT_WIFI_CLIENT_PROFILE_SSID, access_point.ssid.length);
+  access_point.security      = DEFAULT_WIFI_CLIENT_SECURITY_TYPE;
+
+  access_point.encryption    = SL_WIFI_DEFAULT_ENCRYPTION;
+  access_point.credential_id = id;
+  DEBUGOUT("SSID=%s ", access_point.ssid.value);
+
+  status = sl_wifi_connect(SL_WIFI_CLIENT_2_4GHZ_INTERFACE, &access_point, TIMEOUT_MS);
+  DEBUGOUT(",connect ssid: 0x%lx\r\n", status);
 
   uint8_t xtal_enable = 1;
   // M4-TA handshake is required for TA communication.
