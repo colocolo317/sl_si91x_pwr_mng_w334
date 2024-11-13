@@ -1,6 +1,6 @@
 # Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
-project_name: sl_si91x_pwr_mng_w331
-label: sl_si91x_pwr_mng_w331
+project_name: sl_si91x_pwr_mng_w334
+label: sl_si91x_pwr_mng_w334
 description: |
   Demonstrates how to use the Power Manager on the SI91x SoC device.
 category: example|service
@@ -15,7 +15,7 @@ source:
 - {path: app.h}
 - {path: power_manager_m4_wireless_example.c}
 - {path: power_manager_m4_wireless_example.h}
-sdk: {id: simplicity_sdk, version: 2024.6.1}
+sdk: {id: simplicity_sdk, version: 2024.6.2}
 toolchain_settings:
 - {value: -Wall -Werror, option: gcc_compiler_option}
 component:
@@ -33,6 +33,7 @@ component:
   from: wiseconnect3_sdk
   id: sl_si91x_button_917
 - {from: wiseconnect3_sdk, id: sl_si91x_internal_stack}
+- {from: wiseconnect3_sdk, id: sl_usart}
 - {from: wiseconnect3_sdk, id: syscalls}
 - {from: wiseconnect3_sdk, id: timer_ulp_component}
 - instance: [timer0]
@@ -57,6 +58,10 @@ template_contribution:
 - {name: user_files_ps2, priority: 0, value: power_manager_m4_wireless_example.o}
 - {name: user_files_ps2, priority: 0, value: sl_si91x_button.o}
 - {name: user_files_ps2, priority: 0, value: sl_si91x_button_instances.o}
+- {name: user_files_ps2, priority: 0, value: usart_async_example.o}
+- {name: user_files_ps2, priority: 0, value: sl_si91x_usart.o}
+- {name: user_files_ps2, priority: 0, value: USART.o}
+- {name: user_files_ps2, priority: 0, value: rsi_usart.o}
 - {name: user_files_ps2, priority: 0, value: app.o}
 - {name: user_files_ps2, priority: 0, value: main.o}
 provides:
@@ -67,6 +72,6 @@ ui_hints:
   highlight:
   - {path: readme.md, focus: true}
 sdk_extension:
-- {id: wiseconnect3_sdk, version: 3.3.1}
-post_build: {path: sl_si91x_pwr_mng_w331.slpb}
+- {id: wiseconnect3_sdk, version: 3.3.4}
+post_build: {path: sl_si91x_pwr_mng_w334.slpb}
 

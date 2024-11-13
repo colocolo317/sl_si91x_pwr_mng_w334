@@ -2,14 +2,14 @@
 <project name="uc.module.setup.componentSetup.com.silabs.ss.framework.project.toolchain.core.default#com.silabs.ss.tool.ide.arm.toolchain.gnu.cdt:12.2.1.20221205.gcc" propertyScope="project">
   <folder name="resources">
     <folder name="readme">
-      <file name="setupdiagram.png" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/resources/readme/setupdiagram.png"/>
-      <file name="output.png" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/resources/readme/output.png"/>
+      <file name="setupdiagram.png" linked="false" uri="studio:/project/resources/readme/setupdiagram.png"/>
+      <file name="output.png" linked="false" uri="studio:/project/resources/readme/output.png"/>
     </folder>
     <folder name="power_manager_integration_guide">
-      <file name="power_manager_integration.pdf" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/resources/power_manager_integration_guide/power_manager_integration.pdf"/>
+      <file name="power_manager_integration.pdf" linked="false" uri="studio:/project/resources/power_manager_integration_guide/power_manager_integration.pdf"/>
     </folder>
   </folder>
-  <folder name="wiseconnect3_sdk_3.3.1">
+  <folder name="wiseconnect3_sdk_3.3.4">
     <folder name="components">
       <folder name="device">
         <folder name="silabs">
@@ -182,14 +182,18 @@
                 <folder name="unified_api">
                   <folder name="src">
                     <file name="sl_si91x_calendar.c" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_calendar.c"/>
+                    <file name="sl_si91x_dma.c" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_dma.c"/>
                     <file name="sl_si91x_driver_gpio.c" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_driver_gpio.c"/>
                     <file name="sl_si91x_ulp_timer.c" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_ulp_timer.c"/>
+                    <file name="sl_si91x_usart.c" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/src/sl_si91x_usart.c"/>
                   </folder>
                   <folder name="inc">
                     <file name="sl_si91x_calendar.h" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_calendar.h"/>
+                    <file name="sl_si91x_dma.h" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_dma.h"/>
                     <file name="sl_si91x_driver_gpio.h" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_driver_gpio.h"/>
                     <file name="sl_driver_gpio.h" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_driver_gpio.h"/>
                     <file name="sl_si91x_ulp_timer.h" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_ulp_timer.h"/>
+                    <file name="sl_si91x_usart.h" uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/unified_api/inc/sl_si91x_usart.h"/>
                   </folder>
                 </folder>
                 <folder name="unified_peripheral_drivers">
@@ -470,7 +474,7 @@
       </folder>
     </folder>
   </folder>
-  <folder name="simplicity_sdk_2024.6.1">
+  <folder name="simplicity_sdk_2024.6.2">
     <folder name="platform">
       <folder name="common">
         <folder name="inc">
@@ -604,12 +608,12 @@
       </folder>
     </folder>
   </folder>
-  <file name="main.c" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/main.c"/>
-  <file name="app.c" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/app.c"/>
-  <file name="app.h" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/app.h"/>
-  <file name="power_manager_m4_wireless_example.c" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/power_manager_m4_wireless_example.c"/>
-  <file name="power_manager_m4_wireless_example.h" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/power_manager_m4_wireless_example.h"/>
-  <file name="readme.md" linked="false" uri="studio:/sdk/extension/wiseconnect/examples/si91x_soc/service/sl_si91x_power_manager_m4_wireless/readme.md"/>
+  <file name="main.c" linked="false" uri="studio:/project/main.c"/>
+  <file name="app.c" linked="false" uri="studio:/project/app.c"/>
+  <file name="app.h" linked="false" uri="studio:/project/app.h"/>
+  <file name="power_manager_m4_wireless_example.c" linked="false" uri="studio:/project/power_manager_m4_wireless_example.c"/>
+  <file name="power_manager_m4_wireless_example.h" linked="false" uri="studio:/project/power_manager_m4_wireless_example.h"/>
+  <file name="readme.md" linked="false" uri="studio:/project/readme.md"/>
   <includePath uri="studio:/sdk/extension/wiseconnect/components/service/bsd_socket/inc"/>
   <includePath uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/cmsis_driver/CMSIS/Driver/Include"/>
   <includePath uri="studio:/sdk/extension/wiseconnect/components/device/silabs/si91x/mcu/drivers/cmsis_driver"/>
@@ -673,6 +677,7 @@
   <macroDefinition name="DEBUG_ENABLE" value="1"/>
   <macroDefinition name="DEBUG_UART" value="1"/>
   <macroDefinition name="ENABLE_DEBUG_MODULE" value="1"/>
+  <macroDefinition name="UDMA_ROMDRIVER_PRESENT"/>
   <macroDefinition name="SLI_WIRELESS_COMPONENT_PRESENT" value="1"/>
   <macroDefinition name="SLI_SI91X_OFFLOAD_NETWORK_STACK"/>
   <macroDefinition name="SI917"/>
@@ -681,6 +686,8 @@
   <macroDefinition name="TA_DEEP_SLEEP_COMMON_FLASH"/>
   <macroDefinition name="SLI_SI917"/>
   <macroDefinition name="SL_ULP_TIMER"/>
+  <macroDefinition name="SL_SI91X_USART_DMA"/>
+  <macroDefinition name="USART_MODULE"/>
   <macroDefinition name="SI91X_PLATFORM" value="1"/>
   <macroDefinition name="SI91X_SYSRTC_PRESENT" value="1"/>
   <macroDefinition name="SL_SLEEP_TIMER"/>

@@ -3,7 +3,7 @@ parameters:
 - name: "build_dir"
 constants:
 - name: "project_name"
-  value: "sl_si91x_pwr_mng_w331"
+  value: "sl_si91x_pwr_mng_w334"
 steps:
 - task: "create_rps"
   output: "{{build_dir}}/{{project_name}}.rps"

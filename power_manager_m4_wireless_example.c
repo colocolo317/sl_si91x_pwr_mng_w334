@@ -26,20 +26,21 @@
 #include "sl_ulp_timer_instances.h"
 #include "sl_si91x_ulp_timer_common_config.h"
 #include "sl_si91x_button_instances.h"
+#include "usart_async_example.h"
 
 /*******************************************************************************
  ***************************  Defines / Macros  ********************************
  ******************************************************************************/
 #define PS_EVENT_MASK                                                                                           \
-  (SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS4 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS4   \
-   | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS3 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS3 \
-   | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS2 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS2 \
-   | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_SLEEP | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_STANDBY)
-   // Ored value of event for which callback is subscribed
+    (SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS4 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS4   \
+        | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS3 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS3 \
+        | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_ENTERING_PS2 | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_PS2 \
+        | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_SLEEP | SL_SI91X_POWER_MANAGER_EVENT_TRANSITION_LEAVING_STANDBY)
+// Ored value of event for which callback is subscribed
 
 #define ULP_TIMER_MATCH_VALUE 40000000 // Timer match value for down-counter type with 20mhz clock for 2 seconds
 #define ULP_TIMER_INSTANCE \
-  SL_ULP_TIMER_TIMER0 // ulp-timer instance to be used, user can pass selected timer-number in place of '0'
+    SL_ULP_TIMER_TIMER0 // ulp-timer instance to be used, user can pass selected timer-number in place of '0'
 
 #define BUTTON_INSTANCE_0 button_btn0
 
@@ -67,15 +68,15 @@ static boolean_t change_state   = false;
 
 // Thread attributes which are required for creating a thread
 const osThreadAttr_t thread_attributes = {
-  .name       = "app",
-  .attr_bits  = 0,
-  .cb_mem     = 0,
-  .cb_size    = 0,
-  .stack_mem  = 0,
-  .stack_size = 3072,
-  .priority   = osPriorityLow,
-  .tz_module  = 0,
-  .reserved   = 0,
+    .name       = "app",
+    .attr_bits  = 0,
+    .cb_mem     = 0,
+    .cb_size    = 0,
+    .stack_mem  = 0,
+    .stack_size = 3072,
+    .priority   = osPriorityLow,
+    .tz_module  = 0,
+    .reserved   = 0,
 };
 
 /*******************************************************************************
@@ -166,6 +167,12 @@ static void application_start(void *argument)
 
   while (true)
   {
+    usart_async_example_init();
+    osDelay(100);
+    amk_usart_async_receive();
+    osDelay(100);
+    usart_async_example_deinit();
+
     set_npss_wakeup_source(SL_SI91X_POWER_MANAGER_GPIO_WAKEUP);
 
     DEBUGOUT("Entering PS%d Sleep \n", sl_si91x_power_manager_get_current_state());
@@ -199,26 +206,26 @@ static sl_status_t initialize_wireless(void)
   // requirements.
   // Wifi device configuration
   const sl_wifi_device_configuration_t client_init_configuration = {
-    .boot_option = LOAD_NWP_FW,
-    .mac_address = NULL,
-    .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
-    .region_code = US,
-    .boot_config = { .oper_mode       = SL_SI91X_CLIENT_MODE,
-                     .coex_mode       = SL_SI91X_WLAN_ONLY_MODE,
-                     .feature_bit_map = (SL_SI91X_FEAT_SECURITY_OPEN | SL_SI91X_FEAT_WPS_DISABLE
-                                         | SL_SI91X_FEAT_ULP_GPIO_BASED_HANDSHAKE),
-                     .tcp_ip_feature_bit_map =
-                       (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT | SL_SI91X_TCP_IP_FEAT_SSL
-                        | SL_SI91X_TCP_IP_FEAT_ICMP | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
-                     .custom_feature_bit_map     = (SL_SI91X_CUSTOM_FEAT_EXTENTION_VALID),
-                     .ext_custom_feature_bit_map = SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0,
-                     .bt_feature_bit_map         = 0,
-                     .ext_tcp_ip_feature_bit_map =
-                       (SL_SI91X_EXT_TCP_IP_WINDOW_SCALING | SL_SI91X_EXT_TCP_IP_TOTAL_SELECTS(10)
-                        | SL_SI91X_CONFIG_FEAT_EXTENTION_VALID),
-                     .ble_feature_bit_map     = 0,
-                     .ble_ext_feature_bit_map = 0,
-                     .config_feature_bit_map  = SL_SI91X_FEAT_SLEEP_GPIO_SEL_BITMAP }
+      .boot_option = LOAD_NWP_FW,
+      .mac_address = NULL,
+      .band        = SL_SI91X_WIFI_BAND_2_4GHZ,
+      .region_code = US,
+      .boot_config = { .oper_mode       = SL_SI91X_CLIENT_MODE,
+          .coex_mode       = SL_SI91X_WLAN_ONLY_MODE,
+          .feature_bit_map = (SL_SI91X_FEAT_SECURITY_OPEN | SL_SI91X_FEAT_WPS_DISABLE
+              | SL_SI91X_FEAT_ULP_GPIO_BASED_HANDSHAKE),
+              .tcp_ip_feature_bit_map =
+                  (SL_SI91X_TCP_IP_FEAT_DHCPV4_CLIENT | SL_SI91X_TCP_IP_FEAT_DNS_CLIENT | SL_SI91X_TCP_IP_FEAT_SSL
+                      | SL_SI91X_TCP_IP_FEAT_ICMP | SL_SI91X_TCP_IP_FEAT_EXTENSION_VALID),
+                      .custom_feature_bit_map     = (SL_SI91X_CUSTOM_FEAT_EXTENTION_VALID),
+                      .ext_custom_feature_bit_map = SL_SI91X_EXT_FEAT_FRONT_END_SWITCH_PINS_ULP_GPIO_4_5_0,
+                      .bt_feature_bit_map         = 0,
+                      .ext_tcp_ip_feature_bit_map =
+                          (SL_SI91X_EXT_TCP_IP_WINDOW_SCALING | SL_SI91X_EXT_TCP_IP_TOTAL_SELECTS(10)
+                              | SL_SI91X_CONFIG_FEAT_EXTENTION_VALID),
+                              .ble_feature_bit_map     = 0,
+                              .ble_ext_feature_bit_map = 0,
+                              .config_feature_bit_map  = SL_SI91X_FEAT_SLEEP_GPIO_SEL_BITMAP }
   };
   sl_status_t status;
   // Initialize the wifi interface.
@@ -666,8 +673,8 @@ static void remove_unused_peripherals(void)
   peri.ulpss_peripheral = 0;
   // Ored value for npss peripheral.
   peri.npss_peripheral = SL_SI91X_POWER_MANAGER_NPSS_PG_MCUWDT | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUPS
-                         | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUTS | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUSTORE2
-                         | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUSTORE3;
+      | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUTS | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUSTORE2
+      | SL_SI91X_POWER_MANAGER_NPSS_PG_MCUSTORE3;
   // Peripherals passed in this API are powered off.
   sl_si91x_power_manager_remove_peripheral_requirement(&peri);
 }

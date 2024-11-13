@@ -49,7 +49,7 @@ SECTIONS
 		KEEP(*(.isr_vector))		
      	  	
 		
-		  *(EXCLUDE_FILE(  *cmsis_gcc.o *cmsis_os2.o *port.o *queue.o *sl_rsi_utility.o *tasks.o *clock_update.o *rsi_deepsleep_soc.o *rsi_egpio.o *rsi_ipmu.o *ipmu_apis.o *rsi_pll.o *rsi_power_save.o *rsi_ps_ram_func.o *rsi_system_config.o *rsi_time_period.o *rsi_ulpss_clk.o *system_si91x.o *sl_slist.o *strcmp.o *sl_si91x_power_manager.o *sli_si91x_power_manager.o *sl_si91x_power_manager_handler.o *sl_si91x_power_manager_debug.o *sli_si91x_power_manager_wakeup_init.o *sl_si91x_power_manager_wakeup_handler.o *sl_sleeptimer.o *sl_sleeptimer_hal_si91x_sysrtc.o *rsi_sysrtc.o *sl_si91x_low_power_tickless_mode.o *sl_core_cortexm.o *UDMA.o *stdio.o *puts.o *wbuf.o *writer.o *memchr.o *memset.o *nano-vfprintf.o *nano-vfprintf_i.o *printf.o *lock.o *fflush.o *rsi_debug.o *rsi_usart.o *syscalls.o *USART.o *libm_a-s_ceil.o *_arm_*.o *libc_a*.o *libm_a*.o *sbrk.o* *sl_si91x_calendar.o *rsi_rtc.o *sl_si91x_ulp_timer.o *rsi_timers.o *memcpy*.o *UDMA.o *rsi_udma.o *rsi_udma_wrapper.o *sl_si91x_led.o *sl_si91x_peripheral_gpio.o *rsi_egpio.o *sl_si91x_driver_gpio.o *power_manager_m4_wireless_example.o *sl_si91x_button.o *sl_si91x_button_instances.o *app.o *main.o ) .text*)
+		  *(EXCLUDE_FILE(  *cmsis_gcc.o *cmsis_os2.o *port.o *queue.o *sl_rsi_utility.o *tasks.o *rsi_hal_mcu_m4_rom.o *rsi_hal_mcu_m4_ram.o *clock_update.o *rsi_deepsleep_soc.o *rsi_egpio.o *rsi_ipmu.o *ipmu_apis.o *rsi_pll.o *rsi_power_save.o *rsi_ps_ram_func.o *rsi_system_config.o *rsi_time_period.o *rsi_ulpss_clk.o *system_si91x.o *sl_slist.o *strcmp.o *sl_si91x_power_manager.o *sli_si91x_power_manager.o *sl_si91x_power_manager_handler.o *sl_si91x_power_manager_debug.o *sli_si91x_power_manager_wakeup_init.o *sl_si91x_power_manager_wakeup_handler.o *sl_sleeptimer.o *sl_sleeptimer_hal_si91x_sysrtc.o *rsi_sysrtc.o *sl_si91x_low_power_tickless_mode.o *sl_core_cortexm.o *UDMA.o *stdio.o *puts.o *wbuf.o *writer.o *memchr.o *memset.o *nano-vfprintf.o *nano-vfprintf_i.o *printf.o *lock.o *fflush.o *rsi_debug.o *rsi_usart.o *syscalls.o *USART.o *libm_a-s_ceil.o *_arm_*.o *libc_a*.o *libm_a*.o *sbrk.o* *sl_si91x_calendar.o *rsi_rtc.o *sl_si91x_ulp_timer.o *rsi_timers.o *memcpy*.o *UDMA.o *rsi_udma.o *rsi_udma_wrapper.o *sl_si91x_led.o *sl_si91x_peripheral_gpio.o *rsi_egpio.o *sl_si91x_driver_gpio.o *power_manager_m4_wireless_example.o *sl_si91x_button.o *sl_si91x_button_instances.o *usart_async_example.o *sl_si91x_usart.o *USART.o *rsi_usart.o *app.o *main.o ) .text*)
 
 		/* .ctors */
 		*crtbegin.o(.ctors)
@@ -110,6 +110,8 @@ SECTIONS
 		*tasks.o(.text*)
 		*clock_update.o(.text*)
 		*rsi_deepsleep_soc.o(.text*)
+		*rsi_hal_mcu_m4_ram.o(.text*)
+		*rsi_hal_mcu_m4_rom.o(.text*)
 		*rsi_egpio.o(.text*)
 		*rsi_ipmu.o(.text*)
 		*ipmu_apis.o(.text*)
@@ -169,6 +171,10 @@ SECTIONS
 		*power_manager_m4_wireless_example.o(.text*)
 		*sl_si91x_button.o(.text*)
 		*sl_si91x_button_instances.o(.text*)
+		*usart_async_example.o(.text*)
+		*sl_si91x_usart.o(.text*)
+		*USART.o(.text*)
+		*rsi_usart.o(.text*)
 		*app.o(.text*)
 		*main.o(.text*)
 		
